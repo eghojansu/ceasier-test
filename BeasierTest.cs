@@ -29,9 +29,21 @@ namespace CeasierTests
 
             Assert.IsTrue(Regex.IsMatch(config.GetDsn("MSCON"), @"^Data Source=[^;]+;Initial Catalog=TES_DB;User Id=sa;Password=[^;]+;Integrated Security=false;$"));
             Assert.IsTrue(Regex.IsMatch(config.GetDsn("PGCON"), @"^Server=[^;]+;User Id=postgres;Password=[^;]+;Database=TES_DB;Pooling=false;$"));
+        }
 
-            Assert.IsInstanceOfType(config.GetMssql("MSCON"), typeof(Mssql));
-            Assert.IsInstanceOfType(config.GetPgsql("PGCON"), typeof(Pgsql));
+        [TestMethod]
+        public void GettingConnection()
+        {
+            var config = new Beasier();
+
+            Assert.AreSame(config.GetPgsql("PGCON"), config.GetPgsql("PGCON"));
+            Assert.AreSame(config.GetMssql("MSCON"), config.GetMssql("MSCON"));
+        }
+
+        [TestMethod]
+        public void RFCAccess()
+        {
+            var config = new Beasier();
 
             Assert.IsNotNull(config.GetRFCActor("SYS").User);
             Assert.ThrowsException<Exception>(() => config.GetRFCActor("NONE"));
@@ -40,12 +52,7 @@ namespace CeasierTests
             Assert.IsNotNull(config.GetRFCConnection("PROD", "SYS").Actor.User);
             Assert.AreEqual("MYUSER", config.GetRFCConnection("PROD", "MYUSER", "MYPASSWORD").Actor.User);
             Assert.ThrowsException<Exception>(() => config.GetRFCConnection("NONE"));
-        }
 
-        [TestMethod]
-        public void RFCConfiguration()
-        {
-            var config = new Beasier();
             var rfc1 = config.GetRFCConfiguration("PROD", "SYS");
             var rfc2 = config.GetRFCConfiguration("PROD", "foo", "bar");
 

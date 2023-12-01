@@ -3,6 +3,7 @@ using Ceasier;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System;
+using SAP.Middleware.Connector;
 
 namespace CeasierTests.Sap
 {
@@ -41,15 +42,72 @@ namespace CeasierTests.Sap
                 new RfcField("ZEILE", "GRNLine", typeof(int)),
                 new RfcField("BUDAT", "GRNDate", typeof(DateTime)),
                 new RfcField("ERFMG", "Qty", typeof(decimal)),
+                new RfcField("seed", null, "SEED"),
+                new RfcField("comment1", true),
+                new RfcField("getter", (IRfcStructure a) => null),
             };
-            var stock = fn.ToDataTable("test", fields);
+            var data = fn.ToDataTable("test", fields);
 
             Assert.IsTrue(fn.Success);
             Assert.IsNull(fn.Message);
             Assert.IsNull(fn.MessageType);
-            Assert.IsNotNull(stock);
+            Assert.IsNotNull(data);
             Assert.IsNotNull(fn.ResultFirst);
-            Assert.AreEqual(total, stock.Rows.Count);
+            Assert.AreEqual(total, data.Rows.Count);
+        }
+
+        [TestMethod]
+        public void NullStringRFCResultTest()
+        {
+            var config = new Beasier();
+            var fnName = config.Configuration.GetSection("RFCTest2:Name").Value;
+            var fnParams = CreateParams(config.Configuration.GetSection("RFCTest2:Params").Value.Split(';'));
+            var resultTable = config.Configuration.GetSection("RFCTest2:Result").Value;
+
+            Assert.IsNotNull(fnName);
+            Assert.IsNotNull(fnParams);
+            Assert.IsNotNull(resultTable);
+            Assert.IsTrue(fnParams.Count > 0);
+
+            var fn = config.GetRFCFunction(fnName, "PROD", "SYS");
+
+            fn.SetResultTable(resultTable);
+            fn.SetArgs(fnParams);
+            fn.Run();
+
+            var total = fn.Result.Count;
+            var fields = new[]
+            {
+                new RfcField("MATNR", "matnr"),
+                new RfcField("SOBKZ", "sobkz"),
+            };
+            var data = fn.ToDataTable("test", fields);
+
+            Assert.IsTrue(fn.Success);
+            Assert.IsNull(fn.Message);
+            Assert.IsNull(fn.MessageType);
+            Assert.IsNotNull(data);
+            Assert.IsNotNull(fn.ResultFirst);
+            Assert.AreEqual(total, data.Rows.Count);
+        }
+
+        [TestMethod]
+        public void SettingReturnTable()
+        {
+            var config = new Beasier();
+            var fnName = config.Configuration.GetSection("RFCTest1:Name").Value;
+            var fn = config.GetRFCFunction(fnName, "PROD", "SYS");
+
+            fn.SetReturnTable("TEST");
+
+            Assert.IsTrue(fn.Success);
+            Assert.IsNull(fn.Message);
+            Assert.IsNull(fn.MessageType);
+
+            Assert.ThrowsException<ArgumentNullException>(() =>
+            {
+                var res = fn.Result;
+            });
         }
 
         private Dictionary<string, object> CreateParams(string[] lines)

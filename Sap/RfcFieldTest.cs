@@ -60,6 +60,18 @@ namespace CeasierTests.Sap
         }
 
         [TestMethod]
+        public void ConstructFieldOnlyType()
+        {
+            var field = new RfcField("field", typeof(bool));
+
+            Assert.AreEqual("field", field.Name);
+            Assert.AreEqual("field", field.Column);
+            Assert.IsNull(field.Value);
+            Assert.IsFalse(field.IsNullable);
+            Assert.AreEqual(typeof(bool), field.Type);
+        }
+
+        [TestMethod]
         public void SafeDate()
         {
             Assert.IsNull(RfcField.ToSafeDate(null));
