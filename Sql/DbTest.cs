@@ -7,7 +7,6 @@ using Ceasier;
 using Npgsql;
 using System.Collections.Generic;
 using Ceasier.Sql.Driver;
-using System.Data.Common;
 using System.Data.SqlClient;
 
 namespace CeasierTests.Sql

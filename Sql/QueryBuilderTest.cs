@@ -1,9 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Data;
-using Ceasier;
 using Ceasier.Sql;
-using System;
-using System.Data.SqlClient;
 using System.Collections.Generic;
 using Ceasier.Sql.Driver;
 

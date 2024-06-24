@@ -1,7 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Text.RegularExpressions;
 using System;
-using Ceasier.Sql;
 using Ceasier;
 
 namespace CeasierTests
