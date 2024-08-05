@@ -52,7 +52,7 @@ namespace CeasierTests
             Assert.AreEqual("MYUSER", config.GetRFCConnection("PROD", "MYUSER", "MYPASSWORD").Actor.User);
             Assert.ThrowsException<Exception>(() => config.GetRFCConnection("NONE"));
 
-            Assert.AreEqual("ZFMMM006:PROD:SYS", config.GetRFCMap("ZFMMM006"));
+            Assert.AreEqual("ZFMMM006:PROD:SYS", config.GetRFCMap("ZFMMM006").Mapped);
             Assert.ThrowsException<Exception>(() => config.GetRFCMap("NONE"));
 
             var rfc1 = config.GetRFCConfiguration("PROD", "SYS");
